@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>卡密达俱乐部 - 暗区突围护航平台</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background: #ffffff;
+            color: #333;
+            min-height: 100vh;
+            padding-bottom: 65px; /* 底部导航高度 */
+            overflow-x: hidden;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .header {
+            height: 90px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4eaf5 100%);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            border-bottom: 2px solid #2f54eb;
+            position: relative;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid #2f54eb;
+            margin-right: 15px;
+        }
+
+        .header-title {
+            font-size: 18px;
+            color: #2f54eb;
+            font-weight: bold;
+        }
+
+        .current-time {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 12px;
+            color: #2f54eb;
+        }
+
+        .help-float-btn {
+            position: fixed;
+            bottom: 75px;
+            right: 12px;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #2f54eb;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+            z-index: 98;
+        }
+
+        .content {
+            width: 100%;
+            padding: 0 12px;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn .3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-title {
+            font-size: 20px;
+            color: #2f54eb;
+            text-align: center;
+            margin: 18px 0;
+        }
+
+        .intro-box, .safety-box, .notice-box, .service-tips, .order-notice {
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .intro-box {
+            background: #f8f9fa;
+            border-left: 4px solid #2f54eb;
+        }
+
+        .intro-text {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .folded-content {
+            display: none;
+        }
+
+        .expand-btn {
+            color: #2f54eb;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 8px;
+            display: inline-block;
+            font-size: 14px;
+        }
+
+        .safety-box {
+            background: #f0f8ff;
+            border: 1px solid #b6d4fe;
+        }
+
+        .safety-title, .notice-title, .video-title {
+            font-size: 16px;
+            color: #2f54eb;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .safety-list {
+            list-style: none;
+            font-size: 14px;
+        }
+
+        .safety-list li {
+            margin-bottom: 6px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .safety-list li::before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+            top: 1px;
+            font-size: 12px;
+        }
+
+        .notice-box {
+            background: #e6f2ff;
+            border: 1px solid #b6d4fe;
+        }
+
+        .notice-content {
+            font-size: 14px;
+            color: #444;
+        }
+
+        .video-box {
+            margin: 18px 0;
+            text-align: center;
+        }
+
+        .video-container {
+            height: 180px;
+            background: #f1f1f1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed #b6d4fe;
+        }
+
+        .video-placeholder {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .staff-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .staff-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #e4eaf5;
+        }
+
+        .staff-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .staff-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #2f54eb;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-right: 12px;
+        }
+
+        .staff-name {
+            font-size: 16px;
+            color: #2f54eb;
+        }
+
+        .staff-role {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .staff-info {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .contact-box {
+            background: #2f54eb;
+            color: #fff;
+            border-radius: 6px;
+            padding: 8px;
+            text-align: center;
+            margin-top: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .order-table th {
+            background: #2f54eb;
+            color: #fff;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .order-table td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .order-btn {
+            background: #2f54eb;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .essay-box {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #e4eaf5;
+        }
+
+        .essay-title {
+            font-size: 18px;
+            color: #2f54eb;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .essay-paragraph {
+            font-size: 14px;
+            color: #444;
+            margin-bottom: 10px;
+            text-indent: 28px;
+        }
+
+        .help-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+            z-index: 100;
+            display: none;
+            width: 88%;
+        }
+
+        .help-title {
+            font-size: 16px;
+            color: #2f54eb;
+            margin-bottom: 8px;
+        }
+
+        .close-help {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .tab-bar {
+            position: fixed;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            height: 52px;
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e4e4e4;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            z-index: 99;
+        }
+
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .tab-item.active {
+            color: #2f54eb;
+        }
+
+        .tab-icon {
+            font-size: 18px;
+            margin-bottom: 3px;
+        }
+
+        .order-footer {
+            background: #f5f5f5;
+            color: #666;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="10f8c861c3aadf4ff372a7a65f1192bc1763733911156.jpg" alt="头像" class="avatar">
+        <h1 class="header-title">卡密达俱乐部</h1>
+        <div id="current-time" class="current-time"></div>
+    </div>
+
+    <div class="help-float-btn" id="helpFloatBtn">
+        <i class="fas fa-question"></i>
+    </div>
+
+    <div class="help-modal" id="helpModal">
+        <div class="help-title">新手帮助</div>
+        <div class="close-help" id="closeHelp"><i class="fas fa-times"></i></div>
+        <div class="help-content">
+            <div class="help-item">
+                <div class="help-question">Q1：怎么点单？</div>
+                <div class="help-answer">A：添加客服QQ，说明需求即可下单。</div>
+            </div>
+            <div class="help-item">
+                <div class="help-question">Q2：价格以什么为准？</div>
+                <div class="help-answer">A：以客服实际报价为准。</div>
+            </div>
+            <div class="help-item">
+                <div class="help-question">Q3：跑单怎么办？</div>
+                <div class="help-answer">A：凭付款凭证全额退款并补偿。</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <!-- 主页 -->
+        <div id="home" class="page active">
+            <h2 class="page-title">卡密达俱乐部</h2>
+            <div class="intro-box">
+                <p class="intro-text">Welcome to kameda Club<br>
+                欢迎来到卡密达俱乐部<br>
+                各位帅哥美女，即将为您揭开美好的暗区世界，欢迎各位老板点单，绝不跑路，希望您依是如此，详细单子见↓<span class="folded-content"><br>
+                小俱乐部，希望您再次点单或者宣传<br><br>
+                我们拥有专业的护航团队，人均暗区千小时经验，熟悉各种地图路线和物资刷新点😎<br>
+                所有打手均经过严格筛选，技术过硬、人品可靠，杜绝任何开挂行为🤝<br>
+                全天24小时在线接单，秒上号秒开打，让您无需等待⌛<br>
+                售后保障完善，若出现意外情况按协议全额赔付，让您点单无忧💪</span></p>
+                <div class="expand-btn" id="expandBtn">……展开 <i class="fas fa-chevron-down"></i></div>
+            </div>
+
+            <div class="safety-box">
+                <h3 class="safety-title">保障承诺</h3>
+                <ul class="safety-list">
+                    <li>若跑路，全额退款+2倍赔偿</li>
+                    <li>未达保底，免费补单或退款</li>
+                    <li>打手开挂封号，赔号+10倍赔偿</li>
+                    <li>客服10分钟未回复，超时补偿</li>
+                </ul>
+            </div>
+
+            <div class="notice-box">
+                <h3 class="notice-title">公告</h3>
+                <div class="notice-content">
+                    1. 所有价格以客服说明为准；<br>
+                    2. 每日限量100单；<br>
+                    3. 3号箱活动详情咨询客服。
+                </div>
+            </div>
+
+            <div class="video-box">
+                <h3 class="video-title">宣传视频</h3>
+                <div class="video-container">
+                    <div class="video-placeholder">
+                        <i class="fas fa-video" style="font-size: 36px; color: #2f54eb; display: block; margin-bottom: 8px;"></i>
+                        制作中，群内首发<br>
+                        群号：1058765553
+                    </div>
+                </div>
+            </div>
+
+            <!-- 占位长内容，让页面能往下滑 -->
+            <div style="height: 600px; background: linear-gradient(180deg, #fafafa 0%, #f0f4f8 100%); margin-top: 15px; border-radius: 8px; padding: 15px; color: #666;">
+                <p>向下滑动可以看到更多内容...</p>
+                <p style="margin-top: 20px;">卡密达俱乐部，专业护航，值得信赖！😎</p>
+            </div>
+        </div>
+
+        <!-- 客服 -->
+        <div id="contact" class="page">
+            <h2 class="page-title">客服团队</h2>
+            <div class="service-tips">
+                <p>全年无休，添加任意客服即可咨询。</p>
+            </div>
+            <div class="staff-list">
+                <div class="staff-card">
+                    <div class="staff-header">
+                        <div class="staff-avatar"><i class="fas fa-user"></i></div>
+                        <div>
+                            <div class="staff-name">客服¹ — 小莫 😜</div>
+                            <div class="staff-role">早8:00 - 晚18:00</div>
+                        </div>
+                    </div>
+                    <div class="staff-info">
+                        暗区玩龄3年，擅长农场和山谷地图，性格开朗，回复超快，主要负责日常点单咨询和订单对接😘
+                    </div>
+                    <a href="tencent://AddContact/?uin=1307313929" target="_blank">
+                        <div class="contact-box">QQ：1307313929</div>
+                    </a>
+                </div>
+
+                <div class="staff-card">
+                    <div class="staff-header">
+                        <div class="staff-avatar"><i class="fas fa-user-tie"></i></div>
+                        <div>
+                            <div class="staff-name">董事长 — 向前看 🎩</div>
+                            <div class="staff-role">晚18:00 - 凌晨2:00</div>
+                        </div>
+                    </div>
+                    <div class="staff-info">
+                        暗区顶级大神，玩龄5年，曾获官方赛事亚军，俱乐部创始人，负责重大决策和大客户对接😎
+                    </div>
+                    <a href="tencent://AddContact/?uin=3883162478" target="_blank">
+                        <div class="contact-box">QQ：3883162478</div>
+                    </a>
+                </div>
+
+                <div class="staff-card">
+                    <div class="staff-header">
+                        <div class="staff-avatar"><i class="fas fa-users"></i></div>
+                        <div>
+                            <div class="staff-name">QQ群 — 卡密达俱乐部 📢</div>
+                            <div class="staff-role">全员禁言，公告发布</div>
+                        </div>
+                    </div>
+                    <div class="staff-info">
+                        俱乐部官方交流群，发布最新活动和优惠信息，重要通知第一时间送达📩
+                    </div>
+                    <a href="tencent://message/?uin=1058765553&Site=&Menu=yes" target="_blank">
+                        <div class="contact-box">QQ群：1058765553</div>
+                    </a>
+                </div>
+
+                <div class="staff-card">
+                    <div class="staff-header">
+                        <div class="staff-avatar"><i class="fas fa-user-circle"></i></div>
+                        <div>
+                            <div class="staff-name">客服² — 嗯 😶</div>
+                            <div class="staff-role">晚10:00 - 早6:00</div>
+                        </div>
+                    </div>
+                    <div class="staff-info">
+                        暗区玩龄4年，擅长电视台和军械库地图，做事严谨，主要负责进阶单、福利单对接🤝
+                    </div>
+                    <a href="tencent://AddContact/?uin=2124019304" target="_blank">
+                        <div class="contact-box">QQ：2124019304</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 点单 -->
+        <div id="order" class="page">
+            <h2 class="page-title">点单</h2>
+            <div class="order-notice">
+                <div class="notice-title">注意</div>
+                <div class="notice-content">不同保底所需时间不同，请耐心等待。价格以客服为准。</div>
+            </div>
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>套餐</th>
+                        <th>详情</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1. 尝鲜单(推荐)</td>
+                        <td>8r保67.8w</td>
+                        <td><button class="order-btn" onclick="switchTab('contact')">就点这个了</button></td>
+                    </tr>
+                    <tr>
+                        <td>2. 基础单(还行)</td>
+                        <td>16r保护≈130w</td>
+                        <td><button class="order-btn" onclick="switchTab('contact')">就点这个了</button></td>
+                    </tr>
+                    <tr>
+                        <td>3. 进阶单(最划算)</td>
+                        <td>26r保210w</td>
+                        <td><button class="order-btn" onclick="switchTab('contact')">就点这个了</button></td>
+                    </tr>
+                    <tr>
+                        <td>4. 福利单(最划算)</td>
+                        <td>①每r保10w，4r起步<br>②20r以下单，每单加每r5w</td>
+                        <td><button class="order-btn" onclick="switchTab('contact')">就点这个了</button></td>
+                    </tr>
+                    <tr>
+                        <td>5. 大金单(极力推荐)</td>
+                        <td>①26r保出大金1个，保底150w<br>②30r保大金2个，保底140w</td>
+                        <td><button class="order-btn" onclick="switchTab('contact')">就点这个了</button></td>
+                    </tr>
+                    <tr>
+                        <td>6. 小金单(推荐)</td>
+                        <td>20r保底出10个小金，不出加30w保底</td>
+                        <td><button class="order-btn" onclick="switchTab('contact')">就点这个了</button></td>
+                    </tr>
+                    <tr>
+                        <td>7. 开麦陪玩单(一般)</td>
+                        <td>男女随机一个，只负责陪玩聊天，8r</td>
+                        <td><button class="order-btn" onclick="switchTab('contact')">就点这个了</button></td>
+                    </tr>
+                    <tr>
+                        <td>特：起装备</td>
+                        <td>老板自定义12r<br>6套h4妹控等，子弹5级6r、6级8r<br>5套自定义4r</td>
+                        <td><button class="order-btn" onclick="switchTab('contact')">就点这个了</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="order-footer">
+                选择一个客服吧，挑选一个好的时间
+            </div>
+        </div>
+
+        <!-- 乐子 -->
+        <div id="lezi" class="page">
+            <h2 class="page-title">乐子</h2>
+            <div class="essay-box">
+                <div class="essay-title">暗区虫洞：从科特林到古战场</div>
+                <p class="essay-paragraph">那天我正在军械库愉快地捡金条，突然一阵白光闪过，我还以为是显卡炸了。等我反应过来，发现自己站在一片尘土飞扬的古战场上，战术背心变成了厚重的铠甲，手里的步枪也变成了一把闪着寒光的长剑。兜里摸了半天，只掏出半块巧克力——看来这是穿越的启动资金。</p>
+                <p class="essay-paragraph">周围的士兵们正打得热火朝天，我本着暗区玩家的优良传统，先找掩体苟住。一个小兵冲过来，我下意识地想按Q标人，结果只发出一声奇怪的“呃”。那小兵一愣，我赶紧把巧克力递过去，他居然真的收了，还冲我比了个大拇指。看来不管在哪个时代，物资都是硬通货。</p>
+                <p class="essay-paragraph">仗打完后，我跟着幸存的士兵回到营地。他们以为我是远方来的勇士，把我请到主将面前。主将问我有何特长，我想了想，说我擅长“搜点”和“转移”。主将大喜，让我负责侦查敌情。于是我用暗区的跑图技巧，在古代战场上也玩起了“打野”，不仅摸清了敌人的部署，还顺手捡了不少战利品——当然，都是些陶罐和旧兵器，没法卖钱。</p>
+                <p class="essay-paragraph">晚上，我躺在营帐里，望着满天繁星，不禁想起了俱乐部的兄弟们。不知道他们现在在干嘛，是不是又在讨论哪个地图的物资最肥。突然，天空中又闪过一道白光，我猛地闭上眼。等再次睁开，发现自己又回到了军械库，金条还在，巧克力没了。</p>
+                <p class="essay-paragraph">从那以后，我再也不抱怨游戏里的bug了。毕竟，谁能想到一个小小的卡顿，居然能带我来一场跨越时空的冒险呢？不过话又说回来，还是暗区的生活更适合我。这里有熟悉的地图，有一起开黑的兄弟，还有卡密达俱乐部的专业护航。无论遇到什么困难，只要有兄弟们在，就没有打不过的局，没有捡不完的物资。</p>
+                <p class="essay-paragraph">回到俱乐部后，我把这段奇遇告诉了大家，结果他们一致认为我是在“编故事骗鸡腿”。好吧，也许只有真正经历过的人，才能明白那种从现代战场穿越到古代战场的奇妙感受。不过没关系，我知道，只要我们继续在暗区并肩作战，总有一天，还会遇到更多不可思议的事情。毕竟，在这个充满惊喜和意外的世界里，一切皆有可能。</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-bar">
+        <div class="tab-item active" onclick="switchTab('home')">
+            <i class="fas fa-home tab-icon"></i>
+            <span class="tab-text">主页</span>
+        </div>
+        <div class="tab-item" onclick="switchTab('contact')">
+            <i class="fas fa-user-friends tab-icon"></i>
+            <span class="tab-text">客服</span>
+        </div>
+        <div class="tab-item" onclick="switchTab('order')">
+            <i class="fas fa-shopping-cart tab-icon"></i>
+            <span class="tab-text">点单</span>
+        </div>
+        <div class="tab-item" onclick="switchTab('lezi')">
+            <i class="fas fa-laugh-beam tab-icon"></i>
+            <span class="tab-text">乐子</span>
+        </div>
+    </div>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const d = String(now.getDate()).padStart(2, '0');
+            const h = String(now.getHours()).padStart(2, '0');
+            const mi = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('current-time').textContent = `${y}-${m}-${d} ${h}:${mi}:${s}`;
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        const expandBtn = document.getElementById('expandBtn');
+        const foldedContent = document.querySelector('.folded-content');
+        let isExpanded = false;
+        expandBtn.onclick = () => {
+            if (isExpanded) {
+                foldedContent.style.display = 'none';
+                expandBtn.innerHTML = '……展开 <i class="fas fa-chevron-down"></i>';
+            } else {
+                foldedContent.style.display = 'inline';
+                expandBtn.innerHTML = '收起 <i class="fas fa-chevron-up"></i>';
+            }
+            isExpanded = !isExpanded;
+        };
+
+        function switchTab(name) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(name).classList.add('active');
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            const idx = ['home','contact','order','lezi'].indexOf(name);
+            document.querySelectorAll('.tab-item')[idx].classList.add('active');
+        }
+
+        const helpModal = document.getElementById('helpModal');
+        document.getElementById('helpFloatBtn').onclick = () => helpModal.style.display = 'block';
+        document.getElementById('closeHelp').onclick = () => helpModal.style.display = 'none';
+        window.onclick = e => { if (e.target === helpModal) helpModal.style.display = 'none'; };
+    </script>
+</body>
+</html>
